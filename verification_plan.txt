@@ -1,0 +1,6 @@
+1st Scenario <Initialize Memroy>
+2nd Scenario <Reset Behavior>
+3rd Scenario <Write/Read In/From All Entries Random Data>
+4th Scenario <Write & Read {0000H, 5555H, AAAAH, FFFFH}>
+5th Scenario <Read After Write In The Same Memory Slot>
+6th Scenario <Reset After Write (within the same clk cycle)>
