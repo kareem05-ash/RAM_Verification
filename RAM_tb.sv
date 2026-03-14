@@ -85,7 +85,7 @@ module RAM_tb;
                     $display("  > [PASS] en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
                                 en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
                 end
-
+                
                 else                
                     $display("  > [FAIL] en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
                                 en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
@@ -144,6 +144,7 @@ module RAM_tb;
                 write_read();
                 data_arr.delete();
             
+
             // 5th Scenario < Reset After Write (within the same clk cycle) >
                 $display("\n==================== 5th Scenario < Reset After Write (within the same clk cycle) > ====================\n");
                 @ (negedge clk_tb);
@@ -158,7 +159,6 @@ module RAM_tb;
                 sb();
 
 
-            
             // <  STOP Simulation  >
                 $display("\n------------------------------------------------------------");
                 $display("-------------------- <  End Simulation  > --------------------");
@@ -168,11 +168,5 @@ module RAM_tb;
                 $display("  > > FAILed        : %0d", tot_tests - passed);
                 $stop;
         end
-
-    // // monitor
-    //     initial begin
-    //         $monitor("[%g] rst_n_tb = %b, adrress_tb = %h, en_tb = %b, data_in_tb = %h | data_out_dut = %h, valid_out_dut = %b | data_out_gm = %h, valid_out_gm = %b", 
-    //                     $time, rst_n_tb, address_tb, en_tb, data_in_tb, data_out_dut, valid_out_dut, data_out_gm, valid_out_gm);
-    //     end
 
 endmodule
