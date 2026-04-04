@@ -159,9 +159,9 @@ module RAM_tb;
                 sb();
 
 
-            // <  STOP Simulation  >
+            // < STOP Simulation >
                 $display("\n------------------------------------------------------------");
-                $display("-------------------- <  End Simulation  > --------------------");
+                $display("-------------------- < End Simulation > --------------------");
                 $display("------------------------------------------------------------");
                 $display("  > > ALL TEST CASEs: %0d", tot_tests);
                 $display("  > > PASSed        : %0d", passed);
