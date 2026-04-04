@@ -22,6 +22,7 @@ module RAM_gm (
         end else if (en) begin              // write
             mem[address] <= data_in;
             valid_out <= 1'b0;
+            data_out <= 32'b0;
         end
 
         else begin                          // read

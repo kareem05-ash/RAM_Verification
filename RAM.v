@@ -16,8 +16,7 @@ module RAM (
         end
     end
 
-    // assign data_out = (rst_n) ? 0 : mem[address];   // bug
-    assign data_out = (!rst_n) ? 0 : mem[address];
-    // assign valid_out = (rst_n) ? 0 : en;            // bug
+    // assign data_out = (!rst_n) ? 0 : mem[address];                  // bug
+    assign data_out = (!rst_n) ? 0 : (en? 32'h0 : mem[address]);    // fix
     assign valid_out = (!rst_n) ? 0 : ~en;
 endmodule
