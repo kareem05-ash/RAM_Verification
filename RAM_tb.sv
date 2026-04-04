@@ -1,6 +1,6 @@
 `define WORD_SIZE   32
 `define DEPTH       16
-
+import RAM_pkg::*;
 module RAM_tb;
     
     // DUT Inputs
@@ -21,6 +21,7 @@ module RAM_tb;
         logic [`WORD_SIZE - 1:0] data_arr[];
         int tot_tests = 0;
         int passed = 0;
+        rand_ram_inputs r1 = new();
 
     // DUT Instantiation
         RAM DUT(
@@ -82,13 +83,13 @@ module RAM_tb;
                 tot_tests++;
                 if (data_out_dut === data_out_gm && valid_out_dut === valid_out_gm) begin
                     passed++;
-                    $display("  > [PASS] en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
-                                en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
+                    $display("  > [PASS] rst_n = %b, en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
+                                rst_n_tb, en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
                 end
                 
                 else                
-                    $display("  > [FAIL] en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
-                                en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
+                    $display("  > [FAIL] rst_n = %b, en = %b, address = %h, data_in = %h | data_out = %h, exp = %h | valid_out = %b, exp = %b",
+                                rst_n_tb, en_tb, address_tb, data_in_tb, data_out_dut, data_out_gm, valid_out_dut, valid_out_gm);
             end
             endtask
 
@@ -157,6 +158,48 @@ module RAM_tb;
                 en_tb = 0;      // read
                 @ (negedge clk_tb);
                 sb();
+
+
+            // 6th Scenario < Constraint Randomization >
+                $display("\n==================== 6th Scenario < Constraint Randomization > ====================\n");
+
+                $display("\n  ## Loop (1) -> Constraint Randomization\n");
+                repeat(20) begin
+                    assert (r1.randomize());
+                    @ (posedge clk_tb);
+                    rst_n_tb = r1.rst_n;
+                    assign_data(.en(r1.en), .address(r1.address), .data_in(r1.data_in));
+                    sb();
+                end
+
+                $display("\n  ## Loop (2) -> 8-bit data_in\n");
+                repeat(20) begin
+                    assert (r1.randomize() with {data_in[31:8] == 0;});
+                    @ (posedge clk_tb);
+                    rst_n_tb = r1.rst_n;
+                    assign_data(.en(r1.en), .address(r1.address), .data_in(r1.data_in));
+                    sb();                   
+                end
+
+                $display("\n  ## Loop (3) -> address MSB = 1 (Address Upper Range)\n");
+                r1.address_const.constraint_mode(0);
+                repeat(20) begin
+                    assert (r1.randomize() with {address[3] == 1;});
+                    @ (posedge clk_tb);
+                    rst_n_tb = r1.rst_n;
+                    assign_data(.en(r1.en), .address(r1.address), .data_in(r1.data_in));
+                    sb();                   
+                end
+
+                $display("\n  ## Loop (4) -> Disable Address Constraints\n");
+                r1.address_const.constraint_mode(0);
+                repeat(20) begin
+                    assert (r1.randomize());
+                    @ (posedge clk_tb);
+                    rst_n_tb = r1.rst_n;
+                    assign_data(.en(r1.en), .address(r1.address), .data_in(r1.data_in));
+                    sb();                   
+                end
 
 
             // < STOP Simulation >
